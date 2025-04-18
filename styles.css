@@ -43,6 +43,15 @@ video {
         width: 50%;
         height: 100%;
     }
+    .capture-button {
+        left: auto;
+        right: 30px;
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+    .capture-button:active {
+        transform: translateY(50%) scale(0.95);
+    }
 }
 
 .capture-button {
