@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Camera Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+        .camera-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .camera-box {
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #000;
+            width: 100%;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            transform: scaleX(-1); /* Mirror the video for front camera */
+        }
+        .camera-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .instructions {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .instructions h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        @media (min-width: 768px) {
+            .camera-container {
+                flex-direction: row;
+            }
+            .camera-box {
+                width: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Dual Camera Preview</h1>
+    
+    <div class="instructions">
+        <h2>How to use on Android:</h2>
+        <ol>
+            <li>Make sure you have both front and back cameras available on your device</li>
+            <li>Click the "Start Cameras" button below</li>
+            <li>When prompted, allow camera access for this website</li>
+            <li>If you see only one camera, try rotating your device to landscape mode</li>
+            <li>If you still see only one camera, try closing and reopening the browser</li>
+        </ol>
+    </div>
+
+    <div class="camera-container">
+        <div class="camera-box">
+            <video id="frontCamera" autoplay playsinline></video>
+            <div class="camera-label">Front Camera</div>
+        </div>
+        <div class="camera-box">
+            <video id="backCamera" autoplay playsinline></video>
+            <div class="camera-label">Back Camera</div>
+        </div>
+    </div>
+    <button id="startButton">Start Cameras</button>
+
+    <script>
+        const frontCamera = document.getElementById('frontCamera');
+        const backCamera = document.getElementById('backCamera');
+        const startButton = document.getElementById('startButton');
+
+        async function getCameras() {
+            try {
+                // First request camera access to get device labels
+                await navigator.mediaDevices.getUserMedia({ video: true });
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                return videoDevices;
+            } catch (error) {
+                console.error('Error getting cameras:', error);
+                return [];
+            }
+        }
+
+        async function startCameras() {
+            try {
+                const cameras = await getCameras();
+                if (cameras.length < 2) {
+                    alert('Please make sure you have both front and back cameras available on your device. If you do, try rotating your device to landscape mode or restarting the browser.');
+                    return;
+                }
+
+                // Try to identify front and back cameras
+                let frontCam = cameras[0];
+                let backCam = cameras[1];
+
+                // On some devices, the back camera might be listed first
+                if (cameras[0].label.toLowerCase().includes('back') || 
+                    cameras[0].label.toLowerCase().includes('rear')) {
+                    frontCam = cameras[1];
+                    backCam = cameras[0];
+                }
+
+                // Get front camera
+                const frontStream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: frontCam.deviceId }
+                });
+                frontCamera.srcObject = frontStream;
+
+                // Get back camera
+                const backStream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: backCam.deviceId }
+                });
+                backCamera.srcObject = backStream;
+
+                startButton.disabled = true;
+                startButton.textContent = 'Cameras Started';
+            } catch (error) {
+                console.error('Error accessing cameras:', error);
+                alert('Error accessing cameras. Please make sure you have granted camera permissions and try again.');
+            }
+        }
+
+        startButton.addEventListener('click', startCameras);
+    </script>
+</body>
+</html> 
