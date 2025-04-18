@@ -16,12 +16,15 @@ body {
     height: 100vh;
     padding: 0;
     box-sizing: border-box;
+    flex-direction: column; /* Default to portrait layout */
 }
 
 .camera-box {
     overflow: hidden;
     background-color: #000;
     position: relative;
+    width: 100%;
+    height: 50%; /* Default to 50% height for portrait */
 }
 
 video {
@@ -31,19 +34,8 @@ video {
     transform: scaleX(-1); /* Mirror the video for front camera */
 }
 
-/* Portrait mode (default) */
-@media (orientation: portrait) {
-    .camera-container {
-        flex-direction: column;
-    }
-    .camera-box {
-        width: 100%;
-        height: 50%;
-    }
-}
-
 /* Landscape mode */
-@media (orientation: landscape) {
+@media screen and (orientation: landscape) {
     .camera-container {
         flex-direction: row;
     }
@@ -57,7 +49,7 @@ video {
     display: none;
 }
 
-@media (orientation: portrait) {
+@media screen and (orientation: portrait) {
     .orientation-warning {
         display: block;
         position: fixed;
