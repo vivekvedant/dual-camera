@@ -136,4 +136,4 @@ async function startCameras() {
 }
 
 // Start cameras automatically when the page loads
-window.addEventListener('load', startCameras); 
+window.addEventListener('load', startCameras);

@@ -34,28 +34,11 @@ video {
     transform: scaleX(-1); /* Mirror the video for front camera */
 }
 
-/* Landscape mode */
-@media screen and (orientation: landscape) {
-    .camera-container {
-        flex-direction: row;
-    }
-    .camera-box {
-        width: 50%;
-        height: 100%;
-    }
-    .capture-button {
-        bottom: 50%;
-        transform: translateY(50%);
-    }
-    .capture-button:active {
-        transform: translateY(50%) scale(0.95);
-    }
-}
-
 .capture-button {
     position: fixed;
-    right: 30px;
+    left: 50%;
     bottom: 30px;
+    transform: translateX(-50%);
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -75,5 +58,26 @@ video {
 }
 
 .capture-button:active {
-    transform: scale(0.95);
-} 
+    transform: translateX(-50%) scale(0.95);
+}
+
+/* Landscape mode */
+@media screen and (orientation: landscape) {
+    .camera-container {
+        flex-direction: row;
+    }
+    .camera-box {
+        width: 50%;
+        height: 100%;
+    }
+    .capture-button {
+        right: 30px;
+        left: auto;
+        bottom: 35%;
+        top: auto;
+        transform: none;
+    }
+    .capture-button:active {
+        transform: scale(0.95);
+    }
+}
