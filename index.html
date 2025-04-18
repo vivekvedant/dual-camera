@@ -26,12 +26,12 @@
             box-sizing: border-box;
         }
         .camera-box {
-            border: 2px solid #333;
             border-radius: 8px;
             overflow: hidden;
             background-color: #000;
             width: 50%;
             height: 100%;
+            position: relative;
         }
         video {
             width: 100%;
@@ -45,10 +45,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
             padding: 5px;
             font-weight: bold;
+            font-size: 14px;
         }
         button {
             position: fixed;
@@ -125,15 +126,12 @@
         </div>
         <div class="camera-box">
             <video id="backCamera" autoplay playsinline></video>
-            <div class="camera-label">Back Camera</div>
         </div>
     </div>
-    <button id="startButton">Start Cameras</button>
 
     <script>
         const frontCamera = document.getElementById('frontCamera');
         const backCamera = document.getElementById('backCamera');
-        const startButton = document.getElementById('startButton');
 
         async function getCameras() {
             try {
@@ -178,16 +176,14 @@
                     video: { deviceId: backCam.deviceId }
                 });
                 backCamera.srcObject = backStream;
-
-                startButton.disabled = true;
-                startButton.textContent = 'Cameras Started';
             } catch (error) {
                 console.error('Error accessing cameras:', error);
                 alert('Error accessing cameras. Please make sure you have granted camera permissions and try again.');
             }
         }
 
-        startButton.addEventListener('click', startCameras);
+        // Start cameras automatically when the page loads
+        window.addEventListener('load', startCameras);
     </script>
 </body>
 </html> 
