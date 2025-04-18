@@ -43,4 +43,31 @@ video {
         width: 50%;
         height: 100%;
     }
+}
+
+.capture-button {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.capture-button i {
+    font-size: 30px;
+    color: black;
+}
+
+.capture-button:active {
+    transform: translateX(-50%) scale(0.95);
 } 

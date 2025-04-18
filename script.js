@@ -1,5 +1,9 @@
 const frontCamera = document.getElementById('frontCamera');
 const backCamera = document.getElementById('backCamera');
+const captureButton = document.getElementById('captureButton');
+const frontCanvas = document.getElementById('frontCanvas');
+const backCanvas = document.getElementById('backCanvas');
+const combinedCanvas = document.getElementById('combinedCanvas');
 
 // Function to request fullscreen
 function requestFullscreen() {
@@ -36,6 +40,61 @@ async function getCameras() {
         return [];
     }
 }
+
+// Function to capture image from a video element
+function captureFromVideo(video, canvas) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    return canvas;
+}
+
+// Function to combine two images
+function combineImages(frontCanvas, backCanvas, combinedCanvas) {
+    const isPortrait = window.innerHeight > window.innerWidth;
+    
+    if (isPortrait) {
+        // Portrait mode: stack images vertically
+        combinedCanvas.width = Math.max(frontCanvas.width, backCanvas.width);
+        combinedCanvas.height = frontCanvas.height + backCanvas.height;
+        
+        const ctx = combinedCanvas.getContext('2d');
+        ctx.drawImage(frontCanvas, 0, 0);
+        ctx.drawImage(backCanvas, 0, frontCanvas.height);
+    } else {
+        // Landscape mode: place images side by side
+        combinedCanvas.width = frontCanvas.width + backCanvas.width;
+        combinedCanvas.height = Math.max(frontCanvas.height, backCanvas.height);
+        
+        const ctx = combinedCanvas.getContext('2d');
+        ctx.drawImage(frontCanvas, 0, 0);
+        ctx.drawImage(backCanvas, frontCanvas.width, 0);
+    }
+    
+    return combinedCanvas;
+}
+
+// Function to save the combined image
+function saveImage(canvas) {
+    const link = document.createElement('a');
+    link.download = 'dual-camera-capture-' + new Date().getTime() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+// Capture button click handler
+captureButton.addEventListener('click', () => {
+    // Capture images from both cameras
+    const frontImage = captureFromVideo(frontCamera, frontCanvas);
+    const backImage = captureFromVideo(backCamera, backCanvas);
+    
+    // Combine the images
+    const combinedImage = combineImages(frontImage, backImage, combinedCanvas);
+    
+    // Save the combined image
+    saveImage(combinedImage);
+});
 
 async function startCameras() {
     try {
